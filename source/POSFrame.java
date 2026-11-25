@@ -50,6 +50,7 @@ public class POSFrame extends JFrame {
 
     private void initComponents() {
         setLayout(new BorderLayout());
+        setJMenuBar(createMenuBar());
 
         JSplitPane mainPanel = new JSplitPane(
                 JSplitPane.HORIZONTAL_SPLIT,
@@ -59,6 +60,35 @@ public class POSFrame extends JFrame {
         mainPanel.setResizeWeight(0.5);
         mainPanel.setDividerSize(8);
         add(mainPanel, BorderLayout.CENTER);
+    }
+
+    private JMenuBar createMenuBar() {
+        JMenuBar menuBar = new JMenuBar();
+
+        JMenu fileMenu = new JMenu("File");
+        JMenuItem exitItem = new JMenuItem("Exit");
+
+        JMenu helpMenu = new JMenu("Help");
+        JMenuItem aboutItem = new JMenuItem("About");
+
+        exitItem.addActionListener(e -> dispose());
+        aboutItem.addActionListener(e ->
+                JOptionPane.showMessageDialog(
+                        this,
+                        "POIN Off-Sales - Praktikum Java Swing\n"
+                                + "Aplikasi POS sederhana: Add to Cart, total, points,\n"
+                                + "checkout, struk, dan print.\n\n"
+                                + "Dibuat oleh: Dyas Nakata Hilwan (251511009)",
+                        "About",
+                        JOptionPane.INFORMATION_MESSAGE
+                )
+        );
+
+        fileMenu.add(exitItem);
+        helpMenu.add(aboutItem);
+        menuBar.add(fileMenu);
+        menuBar.add(helpMenu);
+        return menuBar;
     }
 
     private JPanel createProductPanel() {
