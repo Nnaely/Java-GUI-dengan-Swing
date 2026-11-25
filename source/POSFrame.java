@@ -223,7 +223,15 @@ public class POSFrame extends JFrame {
 
         try {
             // Validasi qty <= 0 dilakukan oleh constructor CartItem
-            cart.add(new CartItem(products.get(row), qty));
+            CartItem newItem = new CartItem(products.get(row), qty);
+            int index = findCartIndex(newItem.getProduct());
+            if (index >= 0) {
+                // Produk sudah ada di keranjang: qty digabung dalam satu baris
+                CartItem old = cart.get(index);
+                cart.set(index, new CartItem(old.getProduct(), old.getQty() + qty));
+            } else {
+                cart.add(newItem);
+            }
         } catch (IllegalArgumentException ex) {
             showWarning(ex.getMessage() + ".");
             qtyField.requestFocus();
@@ -232,6 +240,15 @@ public class POSFrame extends JFrame {
 
         refreshCartTable();
         updateSummary();
+    }
+
+    private int findCartIndex(Product product) {
+        for (int i = 0; i < cart.size(); i++) {
+            if (cart.get(i).getProduct().getId().equals(product.getId())) {
+                return i;
+            }
+        }
+        return -1;
     }
 
     private void refreshCartTable() {
