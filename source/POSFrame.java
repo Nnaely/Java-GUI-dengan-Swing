@@ -153,11 +153,72 @@ public class POSFrame extends JFrame {
     }
 
     private void bindEvents() {
-        // TODO: selection table + button events.
+        // Step 9: baca row yang dipilih lalu tampilkan info produk
+        productTable.getSelectionModel().addListSelectionListener(e -> {
+            int row = productTable.getSelectedRow();
+            if (row >= 0) {
+                Product selected = products.get(row);
+                selectedLabel.setText(
+                        "Dipilih: " + selected.getId() +
+                        " - " + selected.getName() +
+                        " (Rp" + selected.getPrice() + ")"
+                );
+            }
+        });
+
+        addButton.addActionListener(
+                e -> addSelectedProductToCart()
+        );
     }
 
-    private void addSelectedProductToCart() { }
-    private void refreshCartTable() { }
+    private void addSelectedProductToCart() {
+        int row = productTable.getSelectedRow();
+        if (row < 0) {
+            showWarning("Pilih produk terlebih dahulu dari tabel Produk.");
+            return;
+        }
+
+        int qty;
+        try {
+            qty = Integer.parseInt(qtyField.getText().trim());
+        } catch (NumberFormatException ex) {
+            showWarning("Qty harus berupa angka bulat.");
+            qtyField.requestFocus();
+            return;
+        }
+
+        try {
+            // Validasi qty <= 0 dilakukan oleh constructor CartItem
+            cart.add(new CartItem(products.get(row), qty));
+        } catch (IllegalArgumentException ex) {
+            showWarning(ex.getMessage() + ".");
+            qtyField.requestFocus();
+            return;
+        }
+
+        refreshCartTable();
+    }
+
+    private void refreshCartTable() {
+        // Tabel Keranjang selalu dibangun ulang dari List<CartItem>
+        cartModel.setRowCount(0);
+        for (CartItem item : cart) {
+            Product p = item.getProduct();
+            cartModel.addRow(new Object[] {
+                    p.getId(), p.getName(), item.getQty(),
+                    p.getPrice(), item.getSubtotal()
+            });
+        }
+    }
+
+    private void showWarning(String message) {
+        JOptionPane.showMessageDialog(
+                this,
+                message,
+                "Input tidak valid",
+                JOptionPane.WARNING_MESSAGE
+        );
+    }
     private void updateSummary() { }
     private void checkout() { }
     private void printReceipt() { }
