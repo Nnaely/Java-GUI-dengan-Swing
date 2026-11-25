@@ -250,6 +250,12 @@ public class POSFrame extends JFrame {
             return;
         }
 
+        if (qtyField.getText().isBlank()) {
+            showWarning("Qty wajib diisi.");
+            qtyField.requestFocus();
+            return;
+        }
+
         int qty;
         try {
             qty = Integer.parseInt(qtyField.getText().trim());
