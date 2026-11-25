@@ -2,6 +2,8 @@ import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.awt.print.PrinterException;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -169,6 +171,7 @@ public class POSFrame extends JFrame {
         addButton.addActionListener(
                 e -> addSelectedProductToCart()
         );
+        checkoutButton.addActionListener(e -> checkout());
     }
 
     private void addSelectedProductToCart() {
@@ -238,6 +241,51 @@ public class POSFrame extends JFrame {
         totalLabel.setText("Total: Rp" + total);
         pointsLabel.setText("Points: " + calculatePoints(total));
     }
-    private void checkout() { }
+    private void checkout() {
+        if (cart.isEmpty()) {
+            JOptionPane.showMessageDialog(
+                    this,
+                    "Keranjang masih kosong. Tambahkan produk terlebih dahulu.",
+                    "Checkout gagal",
+                    JOptionPane.WARNING_MESSAGE
+            );
+            return;
+        }
+
+        // Struk dibuat dari isi cart SEBELUM keranjang dikosongkan
+        receiptArea.setText(buildReceipt());
+        receiptArea.setCaretPosition(0);
+
+        cart.clear();
+        refreshCartTable();
+        updateSummary();
+    }
+
+    private String buildReceipt() {
+        String line = "=".repeat(42) + "\n";
+        String dash = "-".repeat(42) + "\n";
+        int total = calculateTotal();
+
+        StringBuilder receipt = new StringBuilder();
+        receipt.append("===== POIN OFF-SALES =====\n");
+        receipt.append("Toko: Demo Toko\n");
+        receipt.append("Tanggal: ").append(LocalDateTime.now().format(
+                DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm"))).append("\n");
+        receipt.append(line);
+        receipt.append(String.format("%-5s %-18s %3s %13s%n", "ID", "Nama", "Qty", "Subtotal"));
+        receipt.append(dash);
+        for (CartItem item : cart) {
+            Product p = item.getProduct();
+            receipt.append(String.format("%-5s %-18s %3d %13s%n",
+                    p.getId(), p.getName(), item.getQty(), "Rp" + item.getSubtotal()));
+        }
+        receipt.append(dash);
+        receipt.append(String.format("%-28s %13s%n", "TOTAL:", "Rp" + total));
+        receipt.append("POINTS DIDAPAT: ").append(calculatePoints(total))
+                .append(" (1 point per Rp 1000)\n");
+        receipt.append(line);
+        receipt.append("Terima kasih! Silakan kunjungi kembali.\n");
+        return receipt.toString();
+    }
     private void printReceipt() { }
 }
