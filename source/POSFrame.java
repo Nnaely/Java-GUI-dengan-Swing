@@ -198,7 +198,7 @@ public class POSFrame extends JFrame {
         JPanel summaryPanel = new JPanel(new FlowLayout(FlowLayout.LEFT, 30, 10));
         summaryPanel.add(summaryGrid);
 
-        receiptArea = new JTextArea(8, 30);
+        receiptArea = new JTextArea(13, 30);
         receiptArea.setEditable(false);
         receiptArea.setFont(new Font(Font.MONOSPACED, Font.PLAIN, 12));
 
@@ -229,6 +229,8 @@ public class POSFrame extends JFrame {
                         " - " + selected.getName() +
                         " (" + formatRupiah(selected.getPrice()) + ")"
                 );
+            } else {
+                selectedLabel.setText("Pilih produk dari tabel di kiri");
             }
         });
 
