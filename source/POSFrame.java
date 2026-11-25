@@ -159,6 +159,7 @@ public class POSFrame extends JFrame {
 
         checkoutButton = new JButton("Checkout");
         printButton = new JButton("Cetak");
+        printButton.setEnabled(false); // aktif setelah ada struk
 
         // Summary: Total, Points, Checkout, Cetak disusun ke bawah
         JPanel summaryGrid = new JPanel(new GridLayout(0, 1, 0, 4));
@@ -313,6 +314,7 @@ public class POSFrame extends JFrame {
         // Struk dibuat dari isi cart SEBELUM keranjang dikosongkan
         receiptArea.setText(buildReceipt());
         receiptArea.setCaretPosition(0);
+        printButton.setEnabled(true);
 
         cart.clear();
         refreshCartTable();
