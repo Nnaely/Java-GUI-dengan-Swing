@@ -7,8 +7,10 @@ public class ComponentDemo extends JFrame {
         setTitle("Swing Component Demo");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
-        // FlowLayout menyusun komponen berurutan dari kiri ke kanan
-        setLayout(new FlowLayout());
+        // Percobaan Step 2: sementara diganti GridLayout(0, 2)
+        // FlowLayout: komponen berurutan dari kiri ke kanan
+        // GridLayout: setiap cell berukuran sama, 2 kolom
+        setLayout(new GridLayout(0, 2));
 
         JLabel label = new JLabel("Nama:");
         JTextField nameField = new JTextField(15);
