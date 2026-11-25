@@ -3,23 +3,51 @@ import java.awt.*;
 
 public class ComponentDemo extends JFrame {
 
+    private final JTextField nameField = new JTextField(15);
+    private final JComboBox<String> deptCombo = new JComboBox<>(
+            new String[] {"Informatika", "Elektronika", "Mesin"}
+    );
+    private final JCheckBox activeCheck = new JCheckBox("Mahasiswa aktif", true);
+    private final JRadioButton regulerRadio = new JRadioButton("Reguler", true);
+    private final JRadioButton ekstensiRadio = new JRadioButton("Ekstensi");
+    private final JTextArea outputArea = new JTextArea(6, 25);
+    private final JButton showButton = new JButton("Tampilkan");
+
     public ComponentDemo() {
         setTitle("Swing Component Demo");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
-        // Panel form: label dan input disusun berurutan
-        JPanel formPanel = new JPanel(new FlowLayout());
-        formPanel.add(new JLabel("Nama:"));
-        formPanel.add(new JTextField(15));
+        // Radio button dikelompokkan supaya hanya satu yang bisa dipilih
+        ButtonGroup group = new ButtonGroup();
+        group.add(regulerRadio);
+        group.add(ekstensiRadio);
 
-        // Panel aksi: tombol Simpan dan Batal
+        outputArea.setEditable(false);
+
+        // Panel form: GridLayout 2 kolom (label | input)
+        JPanel formPanel = new JPanel(new GridLayout(0, 2, 8, 6));
+        formPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
+        formPanel.add(new JLabel("Nama:"));
+        formPanel.add(nameField);
+        formPanel.add(new JLabel("Jurusan:"));
+        formPanel.add(deptCombo);
+        formPanel.add(new JLabel("Status:"));
+        formPanel.add(activeCheck);
+
+        JPanel kelasPanel = new JPanel(new FlowLayout(FlowLayout.LEFT, 0, 0));
+        kelasPanel.add(regulerRadio);
+        kelasPanel.add(ekstensiRadio);
+        formPanel.add(new JLabel("Kelas:"));
+        formPanel.add(kelasPanel);
+
+        // Panel aksi: tombol di bawah
         JPanel actionPanel = new JPanel(new FlowLayout());
-        actionPanel.add(new JButton("Simpan"));
-        actionPanel.add(new JButton("Batal"));
+        actionPanel.add(showButton);
 
         // JFrame memakai BorderLayout, setiap panel punya layout sendiri
         setLayout(new BorderLayout());
-        add(formPanel, BorderLayout.CENTER);
+        add(formPanel, BorderLayout.NORTH);
+        add(new JScrollPane(outputArea), BorderLayout.CENTER);
         add(actionPanel, BorderLayout.SOUTH);
 
         pack();
