@@ -2,10 +2,12 @@ import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.awt.print.PrinterException;
+import java.text.NumberFormat;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 public class POSFrame extends JFrame {
 
@@ -22,6 +24,10 @@ public class POSFrame extends JFrame {
 
     private DefaultTableModel productModel;
     private DefaultTableModel cartModel;
+
+    // Format mata uang Indonesia, contoh: Rp14.000,00
+    private final NumberFormat rupiah =
+            NumberFormat.getCurrencyInstance(Locale.forLanguageTag("id-ID"));
 
     public POSFrame() {
         setTitle("POIN Off-Sales - Java Swing");
@@ -146,7 +152,7 @@ public class POSFrame extends JFrame {
         cartTable = new JTable(cartModel);
         cartTable.getTableHeader().setReorderingAllowed(false);
 
-        totalLabel = new JLabel("Total: Rp0");
+        totalLabel = new JLabel("Total: " + formatRupiah(0));
         totalLabel.setFont(totalLabel.getFont().deriveFont(Font.BOLD, 16f));
         pointsLabel = new JLabel("Points: 0");
         pointsLabel.setFont(pointsLabel.getFont().deriveFont(Font.PLAIN, 14f));
@@ -193,7 +199,7 @@ public class POSFrame extends JFrame {
                 selectedLabel.setText(
                         "Dipilih: " + selected.getId() +
                         " - " + selected.getName() +
-                        " (Rp" + selected.getPrice() + ")"
+                        " (" + formatRupiah(selected.getPrice()) + ")"
                 );
             }
         });
@@ -271,6 +277,10 @@ public class POSFrame extends JFrame {
                 JOptionPane.WARNING_MESSAGE
         );
     }
+    private String formatRupiah(int amount) {
+        return rupiah.format(amount);
+    }
+
     private int calculateTotal() {
         int total = 0;
         for (CartItem item : cart) {
@@ -286,7 +296,7 @@ public class POSFrame extends JFrame {
 
     private void updateSummary() {
         int total = calculateTotal();
-        totalLabel.setText("Total: Rp" + total);
+        totalLabel.setText("Total: " + formatRupiah(total));
         pointsLabel.setText("Points: " + calculatePoints(total));
     }
     private void checkout() {
@@ -325,10 +335,10 @@ public class POSFrame extends JFrame {
         for (CartItem item : cart) {
             Product p = item.getProduct();
             receipt.append(String.format("%-5s %-18s %3d %13s%n",
-                    p.getId(), p.getName(), item.getQty(), "Rp" + item.getSubtotal()));
+                    p.getId(), p.getName(), item.getQty(), formatRupiah(item.getSubtotal())));
         }
         receipt.append(dash);
-        receipt.append(String.format("%-28s %13s%n", "TOTAL:", "Rp" + total));
+        receipt.append(String.format("%-28s %13s%n", "TOTAL:", formatRupiah(total)));
         receipt.append("POINTS DIDAPAT: ").append(calculatePoints(total))
                 .append(" (1 point per Rp 1000)\n");
         receipt.append(line);
