@@ -50,9 +50,28 @@ public class ComponentDemo extends JFrame {
         add(new JScrollPane(outputArea), BorderLayout.CENTER);
         add(actionPanel, BorderLayout.SOUTH);
 
+        // Kode di dalam lambda baru jalan saat tombol diklik
+        showButton.addActionListener(e -> showData());
+
         pack();
         setLocationRelativeTo(null);
         setVisible(true);
+    }
+
+    private void showData() {
+        String nama = nameField.getText();
+        String jurusan = (String) deptCombo.getSelectedItem();
+        boolean aktif = activeCheck.isSelected();
+        String kelas = regulerRadio.isSelected()
+                ? "Reguler"
+                : "Ekstensi";
+
+        outputArea.setText(
+                "Nama: " + nama +
+                "\nJurusan: " + jurusan +
+                "\nAktif: " + aktif +
+                "\nKelas: " + kelas
+        );
     }
 
     public static void main(String[] args) {
