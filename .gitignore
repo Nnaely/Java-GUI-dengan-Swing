@@ -1,0 +1,9 @@
+bin/
+screenshots/
+*_PBO11/
+*.docx
+*.pdf
+*.zip
+*.class
+laporan_src.txt
+logo_polban.png
