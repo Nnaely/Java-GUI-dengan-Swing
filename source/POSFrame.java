@@ -1,6 +1,10 @@
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
+import java.awt.event.InputEvent;
+import java.awt.event.KeyEvent;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.awt.print.PrinterException;
 import java.text.NumberFormat;
 import java.time.LocalDateTime;
@@ -21,6 +25,9 @@ public class POSFrame extends JFrame {
     private JLabel totalLabel;
     private JLabel pointsLabel;
     private JTextArea receiptArea;
+    private JButton addButton;
+    private JButton checkoutButton;
+    private JButton printButton;
 
     private DefaultTableModel productModel;
     private DefaultTableModel cartModel;
@@ -31,7 +38,14 @@ public class POSFrame extends JFrame {
 
     public POSFrame() {
         setTitle("POIN Off-Sales - Java Swing");
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        // Tombol X tidak langsung menutup; tanya konfirmasi dulu
+        setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
+        addWindowListener(new WindowAdapter() {
+            @Override
+            public void windowClosing(WindowEvent e) {
+                confirmExit();
+            }
+        });
 
         initProductData();
         initComponents();
@@ -41,10 +55,6 @@ public class POSFrame extends JFrame {
         setLocationRelativeTo(null);
         setVisible(true);
     }
-
-    private JButton addButton;
-    private JButton checkoutButton;
-    private JButton printButton;
 
     private void initProductData() {
         products.add(new Product("P001", "Air Mineral 600ml", 3000));
@@ -72,12 +82,16 @@ public class POSFrame extends JFrame {
         JMenuBar menuBar = new JMenuBar();
 
         JMenu fileMenu = new JMenu("File");
+        fileMenu.setMnemonic(KeyEvent.VK_F);
         JMenuItem exitItem = new JMenuItem("Exit");
+        exitItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_Q, InputEvent.CTRL_DOWN_MASK));
 
         JMenu helpMenu = new JMenu("Help");
+        helpMenu.setMnemonic(KeyEvent.VK_H);
         JMenuItem aboutItem = new JMenuItem("About");
+        aboutItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_F1, 0));
 
-        exitItem.addActionListener(e -> dispose());
+        exitItem.addActionListener(e -> confirmExit());
         aboutItem.addActionListener(e ->
                 JOptionPane.showMessageDialog(
                         this,
@@ -95,6 +109,19 @@ public class POSFrame extends JFrame {
         menuBar.add(fileMenu);
         menuBar.add(helpMenu);
         return menuBar;
+    }
+
+    private void confirmExit() {
+        int choice = JOptionPane.showConfirmDialog(
+                this,
+                "Yakin ingin keluar dari aplikasi?",
+                "Konfirmasi Exit",
+                JOptionPane.YES_NO_OPTION,
+                JOptionPane.QUESTION_MESSAGE
+        );
+        if (choice == JOptionPane.YES_OPTION) {
+            dispose();
+        }
     }
 
     private JPanel createProductPanel() {
@@ -208,6 +235,8 @@ public class POSFrame extends JFrame {
         addButton.addActionListener(
                 e -> addSelectedProductToCart()
         );
+        // Shortcut: tekan Enter di field Qty sama dengan klik Add to Cart
+        qtyField.addActionListener(e -> addSelectedProductToCart());
         checkoutButton.addActionListener(e -> checkout());
         printButton.addActionListener(e -> printReceipt());
     }
