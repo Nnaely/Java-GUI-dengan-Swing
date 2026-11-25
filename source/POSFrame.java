@@ -172,6 +172,7 @@ public class POSFrame extends JFrame {
                 e -> addSelectedProductToCart()
         );
         checkoutButton.addActionListener(e -> checkout());
+        printButton.addActionListener(e -> printReceipt());
     }
 
     private void addSelectedProductToCart() {
@@ -287,5 +288,23 @@ public class POSFrame extends JFrame {
         receipt.append("Terima kasih! Silakan kunjungi kembali.\n");
         return receipt.toString();
     }
-    private void printReceipt() { }
+    private void printReceipt() {
+        if (receiptArea.getText().isBlank()) {
+            JOptionPane.showMessageDialog(
+                    this,
+                    "Belum ada struk yang dapat dicetak."
+            );
+            return;
+        }
+
+        try {
+            // JTextArea sudah punya kemampuan print; dialog printer dari sistem akan muncul
+            receiptArea.print();
+        } catch (PrinterException ex) {
+            JOptionPane.showMessageDialog(
+                    this,
+                    "Gagal mencetak: " + ex.getMessage()
+            );
+        }
+    }
 }
