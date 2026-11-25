@@ -197,6 +197,7 @@ public class POSFrame extends JFrame {
         }
 
         refreshCartTable();
+        updateSummary();
     }
 
     private void refreshCartTable() {
@@ -219,7 +220,24 @@ public class POSFrame extends JFrame {
                 JOptionPane.WARNING_MESSAGE
         );
     }
-    private void updateSummary() { }
+    private int calculateTotal() {
+        int total = 0;
+        for (CartItem item : cart) {
+            total += item.getSubtotal();
+        }
+        return total;
+    }
+
+    private int calculatePoints(int total) {
+        // pembagian integer: Rp14.000 -> 14 points
+        return total / 1000;
+    }
+
+    private void updateSummary() {
+        int total = calculateTotal();
+        totalLabel.setText("Total: Rp" + total);
+        pointsLabel.setText("Points: " + calculatePoints(total));
+    }
     private void checkout() { }
     private void printReceipt() { }
 }
