@@ -59,7 +59,18 @@ public class ComponentDemo extends JFrame {
     }
 
     private void showData() {
-        String nama = nameField.getText();
+        // Validasi: nama tidak boleh kosong
+        if (nameField.getText().isBlank()) {
+            JOptionPane.showMessageDialog(
+                    this,
+                    "Nama wajib diisi.",
+                    "Input tidak valid",
+                    JOptionPane.WARNING_MESSAGE
+            );
+            return;
+        }
+
+        String nama = nameField.getText().trim();
         String jurusan = (String) deptCombo.getSelectedItem();
         boolean aktif = activeCheck.isSelected();
         String kelas = regulerRadio.isSelected()
